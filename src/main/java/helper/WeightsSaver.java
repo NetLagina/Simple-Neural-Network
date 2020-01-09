@@ -9,13 +9,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
 public class WeightsSaver {
 
-	private static final Logger LOGGER = Logger.getLogger(WeightsSaver.class);
+	private static final Logger LOGGER = LogManager.getLogger(WeightsSaver.class);
 	
 	private final static String WEIGHTS_FILE_PATH = ".\\weights.json";
 	

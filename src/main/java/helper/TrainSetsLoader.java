@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import neuralNetwork.InputNeuronImpl;
 import neuralNetwork.NeuralLayerImpl;
@@ -16,7 +17,7 @@ import neuralNetwork.NeuronImpl;
 
 public class TrainSetsLoader {
 
-	private static final Logger LOGGER = Logger.getLogger(TrainSetsLoader.class);
+	private static final Logger LOGGER = LogManager.getLogger(TrainSetsLoader.class);
 	
 	private String filepath;
 
