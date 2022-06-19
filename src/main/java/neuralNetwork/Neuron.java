@@ -1,6 +1,7 @@
 package neuralNetwork;
 
-public interface Neuron {	
-	double getValue();
-	double getRawValue();
+public interface Neuron {
+    double getValue();
+
+    double getRawValue();
 }

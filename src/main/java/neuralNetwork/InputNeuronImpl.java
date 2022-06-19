@@ -1,28 +1,27 @@
 package neuralNetwork;
 
-public class InputNeuronImpl implements Neuron {
+public final class InputNeuronImpl extends NeuronImpl {
 
-private final double value;
-	
-	public InputNeuronImpl(final double value) {
-		this.value = value;
-	}
-	
-	@Override
-	public double getValue() {
-		return value;
-	}
-	
-	@Override
-	public double getRawValue() {
-		return value;
-	}
+    /**
+     * @param value getValue of neuron
+     *              activation function is set to sigmoid by default
+     */
+    public InputNeuronImpl(double value) {
+        super(value);
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Neuron[").append(value).append("]");
-		return builder.toString();
-	}
+    /**
+     * @param value              getValue of neuron
+     * @param activationFunction activation function of neuron
+     */
+    public InputNeuronImpl(double value, ActivationFunction activationFunction) {
+        super(value, activationFunction);
+    }
+
+
+    @Override
+    public double getValue() {
+        return this.getRawValue();
+    }
 
 }

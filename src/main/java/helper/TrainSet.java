@@ -2,28 +2,22 @@ package helper;
 
 import neuralNetwork.NeuralLayer;
 
-public class TrainSet {
-	
-	private final NeuralLayer inputLayer;
-	private final NeuralLayer outputLayer;
-	
-	public TrainSet(final NeuralLayer inputLayer, final NeuralLayer outputLayer) {
-		this.inputLayer = inputLayer;
-		this.outputLayer = outputLayer;
-	}
+public record TrainSet(NeuralLayer inputLayer, NeuralLayer outputLayer) {
 
-	/**
-	 * @return the inputLayer
-	 */
-	public NeuralLayer getInputLayer() {
-		return inputLayer;
-	}
+    /**
+     * @return the inputLayer
+     */
+    @Override
+    public NeuralLayer inputLayer() {
+        return inputLayer;
+    }
 
-	/**
-	 * @return the outputLayer
-	 */
-	public NeuralLayer getOutputLayer() {
-		return outputLayer;
-	}
+    /**
+     * @return the outputLayer
+     */
+    @Override
+    public NeuralLayer outputLayer() {
+        return outputLayer;
+    }
 
 }

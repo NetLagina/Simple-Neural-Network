@@ -17,38 +17,38 @@ import neuralNetwork.NeuronImpl;
 
 public class TrainSetsLoader {
 
-	private static final Logger LOGGER = LogManager.getLogger(TrainSetsLoader.class);
-	
-	private String filepath;
+    private static final Logger LOGGER = LogManager.getLogger(TrainSetsLoader.class);
 
-	public TrainSetsLoader(String filepath) {
-		this.filepath = filepath;
-	}
+    private final String filepath;
 
-	public List<TrainSet> loadTrainSets() throws IOException {
-		List<TrainSet> trainSets = new ArrayList<>();
-		File file = new File(filepath);
-		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			while (br.ready()) {
-				String input = br.readLine();
-				String output = br.readLine();
-				var inputArray = input.split(" ");
-				var outputArray = output.split(" ");
-				Neuron[] inputNeurons = new Neuron[inputArray.length];
-				Neuron[] outputNeurons = new Neuron[outputArray.length];
-				for (var i = 0; i < inputArray.length; i++) {
-					inputNeurons[i] = new InputNeuronImpl(Double.parseDouble(inputArray[i]));
-				}
-				for (var i = 0; i < outputArray.length; i++) {
-					outputNeurons[i] = new NeuronImpl(Double.parseDouble(outputArray[i]));
-				}
-				trainSets.add(new TrainSet(new NeuralLayerImpl(inputNeurons), new NeuralLayerImpl(outputNeurons)));
-			}
-		} catch (IOException e) {
-			LOGGER.fatal(e.getStackTrace());
-			throw e;
-		}
-		return trainSets;
-	}
+    public TrainSetsLoader(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public List<TrainSet> loadTrainSets() throws IOException {
+        List<TrainSet> trainSets = new ArrayList<>();
+        File file = new File(filepath);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while (br.ready()) {
+                String input = br.readLine();
+                String output = br.readLine();
+                var inputArray = input.split(" ");
+                var outputArray = output.split(" ");
+                Neuron[] inputNeurons = new Neuron[inputArray.length];
+                Neuron[] outputNeurons = new Neuron[outputArray.length];
+                for (var i = 0; i < inputArray.length; i++) {
+                    inputNeurons[i] = new InputNeuronImpl(Double.parseDouble(inputArray[i]));
+                }
+                for (var i = 0; i < outputArray.length; i++) {
+                    outputNeurons[i] = new NeuronImpl(Double.parseDouble(outputArray[i]));
+                }
+                trainSets.add(new TrainSet(new NeuralLayerImpl(inputNeurons), new NeuralLayerImpl(outputNeurons)));
+            }
+        } catch (IOException e) {
+            LOGGER.fatal(e.getStackTrace());
+            throw e;
+        }
+        return trainSets;
+    }
 
 }
