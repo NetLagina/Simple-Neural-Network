@@ -27,7 +27,7 @@ trainSet.txt - example of trainset file.
 ## Neural Network
 Next, you need to create a neural network object.
 
-    var network = NeuralNetworkFactory.getNeuralNetwork(new int[] {15, 15, 10});
+    var network = NeuralNetworkFactory.getNeuralNetwork(new int[]{15, 15, 10});
      
 The numbers in the array indicate the number of neurons in each layer, starting from the input layer. In our case, the numbers consist of 15 points, which can be shaded (included) or not. The output values are 10 numbers, each of which denotes digits from 0 to 9. The closer the digit is to "1", the more the neural network is confident in the correctness of this option.
 ## Training
@@ -45,12 +45,13 @@ After training, you may need to save the results of the calculation of the graph
 ## Calculating results
 To use a neural network on arbitrary input data, you should set it as an input layer, and start the calculation process.
 
-    network.setInputLayer(new NeuralLayerImpl(new Neuron[] {new NeuronImpl(1), new NeuronImpl(1), new NeuronImpl(1),
-				                                new NeuronImpl(0), new NeuronImpl(0), new NeuronImpl(1),
-				                                new NeuronImpl(1), new NeuronImpl(1), new NeuronImpl(1),
-				                                new NeuronImpl(1), new NeuronImpl(0), new NeuronImpl(0),
-				                                new NeuronImpl(1), new NeuronImpl(1), new NeuronImpl(1)
-				                                }));
+    network.setInputLayer(new NeuralLayerImpl(new Neuron[]{
+                new InputNeuronImpl(1), new InputNeuronImpl(1), new InputNeuronImpl(1),
+                new InputNeuronImpl(0), new InputNeuronImpl(0), new InputNeuronImpl(1),
+                new InputNeuronImpl(1), new InputNeuronImpl(1), new InputNeuronImpl(1),
+                new InputNeuronImpl(1), new InputNeuronImpl(0), new InputNeuronImpl(0),
+                new InputNeuronImpl(1), new InputNeuronImpl(1), new InputNeuronImpl(1)
+        }));
 		
     network.calc();
     
@@ -59,5 +60,5 @@ Output:
     var output = network.getOutputLayer();
     System.out.println("Answer is");
     for (var i = 0; i < output.size(); i++) {
-      System.out.printf("%d: %.1f%n", (i+1), output.getNeuron(i).getValue());
+        System.out.printf("%d: %.1f%%%n", ((i + 1) % 10), output.getNeuron(i).getValue() * 100);
     }
