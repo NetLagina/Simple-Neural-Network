@@ -12,7 +12,7 @@ import neuralNetwork.NeuronImpl;
 
 public class NeuralNetworkFactory {
 
-    public static NeuralNetwork getNeuralNetwork(final int[] layersSize) {
+    public static NeuralNetwork getNeuralNetwork(final int[] layersSize, final boolean isBiasEnabled) {
         NeuralLayer[] layers = new NeuralLayer[layersSize.length];
         var i = 0;
         for (var size : layersSize) {
@@ -24,10 +24,10 @@ public class NeuralNetworkFactory {
             }
             layers[i++] = layer;
         }
-        return new NeuralNetworkImpl(layers);
+        return new NeuralNetworkImpl(layers, isBiasEnabled);
     }
 
-    public static NeuralNetwork getNeuralNetwork(final int[] layersSize, final Map<Pair<NeuronIndexPair>, Pair<Double>> weights) {
+    public static NeuralNetwork getNeuralNetwork(final int[] layersSize, final Map<Pair<NeuronIndexPair>, Pair<Double>> weights, final boolean isBiasEnabled) {
         NeuralLayer[] layers = new NeuralLayer[layersSize.length];
         var i = 0;
         for (var size : layersSize) {
@@ -39,7 +39,7 @@ public class NeuralNetworkFactory {
             }
             layers[i++] = layer;
         }
-        return new NeuralNetworkImpl(layers, weights);
+        return new NeuralNetworkImpl(layers, weights, isBiasEnabled);
     }
 
     private static Neuron getNewNeuron() {

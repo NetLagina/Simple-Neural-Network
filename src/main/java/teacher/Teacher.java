@@ -77,11 +77,17 @@ public class Teacher {
             for (var layerIndex = network.size() - 1; 0 < layerIndex; layerIndex--) {
                 currentLayerDeltas = new double[network.getLayer(layerIndex).size()];
                 for (var neuronIndex = 0; neuronIndex < network.getLayer(layerIndex).size(); neuronIndex++) {
-                    for (var i = 0; i < network.getLayer(layerIndex - 1).size(); i++) {
-                        var weightIndex = new Pair<>(new NeuronIndexPair(layerIndex - 1, i), new NeuronIndexPair(layerIndex, neuronIndex));
+                    for (var previousLayerNeuronIndex = 0; previousLayerNeuronIndex < network.getLayer(layerIndex - 1).size(); previousLayerNeuronIndex++) {
+                        var weightIndex = new Pair<>(new NeuronIndexPair(layerIndex - 1, previousLayerNeuronIndex), new NeuronIndexPair(layerIndex, neuronIndex));
                         var oldWeightPair = network.getWeights().get(weightIndex);
                         var deltaWeight = getDeltaWeight(weightIndex, oldWeightPair.getSecondValue(), answer, trainSet.outputLayer());
                         network.getWeights().put(weightIndex, new Pair<>(oldWeightPair.getFirstValue() + deltaWeight, deltaWeight));
+                    }
+                    if (network.isBiasEnabled()) {
+                        var biasWeightIndex = new Pair<>(new NeuronIndexPair(layerIndex - 1, -1), new NeuronIndexPair(layerIndex, neuronIndex));
+                        var biasOldWeightPair = network.getBiasWeights().get(biasWeightIndex);
+                        var biasDeltaWeight = getDeltaWeight(biasWeightIndex, biasOldWeightPair.getSecondValue(), answer, trainSet.outputLayer());
+                        network.getBiasWeights().put(biasWeightIndex, new Pair<>(biasOldWeightPair.getFirstValue() + biasDeltaWeight, biasDeltaWeight));
                     }
                 }
                 nextLayerDeltas = currentLayerDeltas;
@@ -102,9 +108,9 @@ public class Teacher {
         var weights = network.getWeights();
         var neuronValue = network.getLayer(layerIndex).getNeuron(index).getValue();
         var delta = (1 - neuronValue) * neuronValue;
-        for (var j = 0; j < nextLayerDeltas.length; j++) {
-            var weight = weights.get(new Pair<>(new NeuronIndexPair(layerIndex, index), new NeuronIndexPair(layerIndex + 1, j))).getFirstValue();
-            delta *= weight * nextLayerDeltas[j];
+        for (var nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayerDeltas.length; nextLayerNeuronIndex++) {
+            var weight = weights.get(new Pair<>(new NeuronIndexPair(layerIndex, index), new NeuronIndexPair(layerIndex + 1, nextLayerNeuronIndex))).getFirstValue();
+            delta *= weight * nextLayerDeltas[nextLayerNeuronIndex];
         }
         currentLayerDeltas[index] = delta;
         return delta;
@@ -117,7 +123,10 @@ public class Teacher {
         } else {
             delta = getDelta(weightIndex.getSecondValue().getNeuronIndex(), answer, expectedAnswer);
         }
-        var out = network.getLayer(weightIndex.getFirstValue().getLayerIndex()).getNeuron(weightIndex.getFirstValue().getNeuronIndex()).getValue();
+        var out = 1.0;
+        if (weightIndex.getFirstValue().getNeuronIndex() != -1) { // not bias neuron
+            out = network.getLayer(weightIndex.getFirstValue().getLayerIndex()).getNeuron(weightIndex.getFirstValue().getNeuronIndex()).getValue();
+        }
         return delta * out;
     }
 
