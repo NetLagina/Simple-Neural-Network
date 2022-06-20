@@ -27,7 +27,7 @@ trainSet.txt - example of trainset file.
 ## Neural Network
 Next, you need to create a neural network object.
 
-    var network = NeuralNetworkFactory.getNeuralNetwork(new int[]{15, 15, 10});
+    var network = NeuralNetworkFactory.getNeuralNetwork(new int[]{15, 15, 10}, true);
      
 The numbers in the array indicate the number of neurons in each layer, starting from the input layer. In our case, the numbers consist of 15 points, which can be shaded (included) or not. The output values are 10 numbers, each of which denotes digits from 0 to 9. The closer the digit is to "1", the more the neural network is confident in the correctness of this option.
 ## Training

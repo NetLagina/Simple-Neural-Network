@@ -13,11 +13,15 @@ public interface NeuralNetwork extends Iterable<NeuralLayer> {
 
     boolean calcMultiThreads() throws InterruptedException;
 
+    boolean isBiasEnabled();
+
     NeuralLayer getOutputLayer();
 
     NeuralLayer getLayer(int index);
 
     Map<Pair<NeuronIndexPair>, Pair<Double>> getWeights();
+
+    Map<Pair<NeuronIndexPair>, Pair<Double>> getBiasWeights();
 
     Iterator<NeuralLayer> iterator();
 

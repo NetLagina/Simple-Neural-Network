@@ -19,11 +19,14 @@ public class NeuralNetworkImpl implements NeuralNetwork {
 
     private static final Logger LOGGER = LogManager.getLogger(NeuralNetworkImpl.class);
 
+    private final boolean isBiasEnabled;
     private final List<NeuralLayer> layers;
     private final Map<Pair<NeuronIndexPair>, Pair<Double>> weights;
+    private Map<Pair<NeuronIndexPair>, Pair<Double>> biasWeights;
 
-    public NeuralNetworkImpl(final NeuralLayer[] layers) {
+    public NeuralNetworkImpl(final NeuralLayer[] layers, boolean isBiasEnabled) {
         this.layers = new ArrayList<>(Arrays.asList(layers));
+        this.isBiasEnabled = isBiasEnabled;
 
         this.weights = new TreeMap<>();
         for (var firstLayer = 0; firstLayer < this.layers.size() - 1; firstLayer++) {
@@ -33,11 +36,29 @@ public class NeuralNetworkImpl implements NeuralNetwork {
                 }
             }
         }
+
+        if (isBiasEnabled) {
+            this.biasWeights = new TreeMap<>();
+            for (var biasLayer = 0; biasLayer < this.layers.size() - 1; biasLayer++) {
+                for (var secondLayerNeuron = 0; secondLayerNeuron < this.layers.get(biasLayer + 1).size(); secondLayerNeuron++) {
+                    biasWeights.put(new Pair<>(new NeuronIndexPair(biasLayer, -1), new NeuronIndexPair(biasLayer + 1, secondLayerNeuron)), new Pair<>(Helper.getRandom(), 0.0));
+                }
+            }
+        }
     }
 
-    public NeuralNetworkImpl(final NeuralLayer[] layers, final Map<Pair<NeuronIndexPair>, Pair<Double>> weights) {
+    public NeuralNetworkImpl(final NeuralLayer[] layers, final Map<Pair<NeuronIndexPair>, Pair<Double>> weights, boolean isBiasEnabled) {
         this.layers = new ArrayList<>(Arrays.asList(layers));
         this.weights = weights;
+        this.isBiasEnabled = isBiasEnabled;
+        if (isBiasEnabled) {
+            this.biasWeights = new TreeMap<>();
+            for (var biasLayer = 0; biasLayer < this.layers.size() - 1; biasLayer++) {
+                for (var secondLayerNeuron = 0; secondLayerNeuron < this.layers.get(biasLayer + 1).size(); secondLayerNeuron++) {
+                    biasWeights.put(new Pair<>(new NeuronIndexPair(biasLayer, -1), new NeuronIndexPair(biasLayer + 1, secondLayerNeuron)), new Pair<>(Helper.getRandom(), 0.0));
+                }
+            }
+        }
     }
 
     public void setInputLayer(NeuralLayer layer) {
@@ -57,11 +78,14 @@ public class NeuralNetworkImpl implements NeuralNetwork {
 
     private double calcNeuronValue(NeuronIndexPair neuronPairIndex) {
         double newValue = 0.0;
-        for (var i = 0; i < layers.get(neuronPairIndex.getLayerIndex() - 1).size(); i++) {
-            var weight = weights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, i), neuronPairIndex));
-            double value;
-            value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getValue();
+        for (var previousLayerNeuronIndex = 0; previousLayerNeuronIndex < layers.get(neuronPairIndex.getLayerIndex() - 1).size(); previousLayerNeuronIndex++) {
+            var weight = weights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, previousLayerNeuronIndex), neuronPairIndex));
+            var value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(previousLayerNeuronIndex).getValue();
             newValue += value;
+        }
+        if (isBiasEnabled) {
+            var biasWeight = biasWeights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, -1), neuronPairIndex));
+            newValue += biasWeight.getFirstValue();
         }
         return newValue;
     }
@@ -99,14 +123,21 @@ public class NeuralNetworkImpl implements NeuralNetwork {
         public Double call() {
             double newValue = 0.0;
             for (var i = 0; i < layers.get(neuronPairIndex.getLayerIndex() - 1).size(); i++) {
-                newValue += weights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, i),
-                        neuronPairIndex)
-                ).getFirstValue() *
-                        layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getValue();
+                var weight = weights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, i), neuronPairIndex));
+                var value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getValue();
+                newValue += value;
+            }
+            if (isBiasEnabled) {
+                var biasWeight = biasWeights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, -1), neuronPairIndex));
+                newValue += biasWeight.getFirstValue();
             }
             return newValue;
         }
 
+    }
+
+    public boolean isBiasEnabled() {
+        return isBiasEnabled;
     }
 
     public NeuralLayer getOutputLayer() {
@@ -119,6 +150,10 @@ public class NeuralNetworkImpl implements NeuralNetwork {
 
     public Map<Pair<NeuronIndexPair>, Pair<Double>> getWeights() {
         return weights;
+    }
+
+    public Map<Pair<NeuronIndexPair>, Pair<Double>> getBiasWeights() {
+        return biasWeights;
     }
 
     @Override
