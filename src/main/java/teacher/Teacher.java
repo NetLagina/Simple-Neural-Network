@@ -54,7 +54,7 @@ public class Teacher {
         this.moment = moment;
     }
 
-    public void teachBackpropagation() {
+    public boolean teachBackpropagation() {
         LOGGER.info("BACKPROPAGATION TRAIN STARTS");
         for (int epoch = 0; epoch < maxEpoch; epoch++) {
             double errorRate;
@@ -70,8 +70,8 @@ public class Teacher {
             };
 
             LOGGER.info("Epoch: " + (epoch + 1) + "/" + maxEpoch + " Error Rate: " + errorRate);
-            if (errorRate < minErrorRate) {
-                return;
+            if (errorRate < minErrorRate || Double.isNaN(errorRate) || Double.isInfinite(errorRate)) {
+                return false;
             }
 
             for (var layerIndex = network.size() - 1; 0 < layerIndex; layerIndex--) {
@@ -87,6 +87,7 @@ public class Teacher {
                 nextLayerDeltas = currentLayerDeltas;
             }
         }
+        return true;
     }
 
     private double getDelta(int index, NeuralLayer answer, NeuralLayer expectedAnswer) {

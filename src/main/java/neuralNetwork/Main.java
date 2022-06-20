@@ -22,7 +22,9 @@ public class Main {
             return;
         }
         var teacher = new Teacher(network, trainSets);
-        teacher.teachBackpropagation();
+        if (!teacher.teachBackpropagation()) {
+            return;
+        }
         WeightsSaver ws = new WeightsSaver();
         ws.save(network.getWeights());
 
