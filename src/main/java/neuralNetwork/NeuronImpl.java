@@ -27,7 +27,9 @@ public class NeuronImpl implements Neuron {
 
     @Override
     public double getValue() {
-        if (activationFunction == ActivationFunction.SIGMOID) {
+        if (activationFunction == ActivationFunction.ReLU) {
+            return Helper.activationFuncReLU(value);
+        } else if (activationFunction == ActivationFunction.SIGMOID) {
             return Helper.activationFuncSigmoid(value);
         } else {
             return Helper.activationFuncHyperbolicTan(value);

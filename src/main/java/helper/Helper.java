@@ -6,6 +6,10 @@ import java.util.Random;
 
 public class Helper {
 
+    public static double activationFuncReLU(final double value) {
+        return Math.max(value, 0.0);
+    }
+
     public static double activationFuncSigmoid(final double value) {
         return 1.0 / (1.0 + Math.exp(-value));
     }
