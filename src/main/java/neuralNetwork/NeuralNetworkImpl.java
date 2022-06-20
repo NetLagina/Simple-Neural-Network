@@ -60,11 +60,7 @@ public class NeuralNetworkImpl implements NeuralNetwork {
         for (var i = 0; i < layers.get(neuronPairIndex.getLayerIndex() - 1).size(); i++) {
             var weight = weights.get(new Pair<>(new NeuronIndexPair(neuronPairIndex.getLayerIndex() - 1, i), neuronPairIndex));
             double value;
-            if (neuronPairIndex.getLayerIndex() - 1 != 0) {
-                value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getValue();
-            } else {
-                value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getRawValue();
-            }
+            value = weight.getFirstValue() * layers.get(neuronPairIndex.getLayerIndex() - 1).getNeuron(i).getValue();
             newValue += value;
         }
         return newValue;
