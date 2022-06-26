@@ -21,7 +21,7 @@ public class Teacher {
     private double minErrorRate = 0.00001;
     private ErrorRateCalculationMethod errorRateCalculationMethod = ErrorRateCalculationMethod.MSE;
     private double learningSpeed = 0.5;
-    private double moment = 0.005;
+    private double momentum = 0.005;
 
     private final NeuralNetwork network;
     private final List<TrainSet> trainSets;
@@ -50,8 +50,8 @@ public class Teacher {
         this.learningSpeed = learningSpeed;
     }
 
-    public void setMoment(double moment) {
-        this.moment = moment;
+    public void setMomentum(double momentum) {
+        this.momentum = momentum;
     }
 
     public boolean teachBackpropagation() {
@@ -131,7 +131,7 @@ public class Teacher {
     }
 
     private double getDeltaWeight(Pair<NeuronIndexPair> weightIndex, double deltaWeight, NeuralLayer answer, NeuralLayer expectedAnswer) {
-        return learningSpeed * getGrad(weightIndex, answer, expectedAnswer) + moment * deltaWeight;
+        return learningSpeed * getGrad(weightIndex, answer, expectedAnswer) + momentum * deltaWeight;
     }
 
 }
