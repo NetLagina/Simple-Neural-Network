@@ -11,10 +11,10 @@ import teacher.Teacher;
 
 public class Main {
 
-    public static void main(String[] args) {
+    static void main() {
         var network = NeuralNetworkFactory.getNeuralNetwork(new int[]{15, 15, 10}, true);
 
-        var fileLoader = new TrainSetsLoader(".\\trainSet.txt");
+        var fileLoader = new TrainSetsLoader("./trainSet.txt");
         List<TrainSet> trainSets;
         try {
             trainSets = fileLoader.loadTrainSets();

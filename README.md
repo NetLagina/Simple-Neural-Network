@@ -10,10 +10,10 @@ The neural network can learn to recognize the numbers 0 - 9 in the form of an el
     1 1 1 - number 8.
     
 The main.java file is configured with an example of network training and an attempt to recognize the number 2.
-## Prepairing trainsets
+## Preparing trainsets
 A training file is required for network training. You can specify a file and create a trainset like this:
 
-    var fileLoader = new TrainSetsLoader (".\\trainSet.txt");
+    var fileLoader = new TrainSetsLoader ("./trainSet.txt");
     List<TrainSet> trainSets = fileLoader.loadTrainSets();
 
 The trainset file should look like: 

@@ -36,7 +36,7 @@ public class WeightsSaver {
 
     @SuppressWarnings("unchecked")
     public Map<Pair<NeuronIndexPair>, Pair<Double>> load() {
-        String json = "";
+        String json;
         File file = new File(WEIGHTS_FILE_PATH);
         Map<Pair<NeuronIndexPair>, Pair<Double>> weights = null;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

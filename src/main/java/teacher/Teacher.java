@@ -69,7 +69,7 @@ public class Teacher {
                 case ARCTAN -> Helper.getArctan(trainSet.outputLayer(), answer);
             };
 
-            LOGGER.info("Epoch: " + (epoch + 1) + "/" + maxEpoch + " Error Rate: " + errorRate);
+            LOGGER.info("Epoch: {}/{} Error Rate: {}", epoch + 1, maxEpoch, errorRate);
             if (errorRate < minErrorRate || Double.isNaN(errorRate) || Double.isInfinite(errorRate)) {
                 return false;
             }

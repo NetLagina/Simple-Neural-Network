@@ -91,24 +91,25 @@ public class NeuralNetworkImpl implements NeuralNetwork {
     }
 
     public boolean calcMultiThreads() throws InterruptedException {
-        var executor = Executors.newCachedThreadPool();
+        try (var executor = Executors.newCachedThreadPool()) {
 
-        for (var layerIndex = 1; layerIndex < layers.size(); layerIndex++) {
-            Neuron[] neurons = new Neuron[layers.get(layerIndex).size()];
-            var value = new Future[layers.get(layerIndex).size()];
-            for (var neuronIndex = 0; neuronIndex < layers.get(layerIndex).size(); neuronIndex++) {
-                value[neuronIndex] = executor.submit(new CalcNeuronValue(new NeuronIndexPair(layerIndex, neuronIndex)));
-            }
-            for (var neuronIndex = 0; neuronIndex < layers.get(layerIndex).size(); neuronIndex++) {
-                try {
-                    neurons[neuronIndex] = new NeuronImpl((double) value[neuronIndex].get());
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+            for (var layerIndex = 1; layerIndex < layers.size(); layerIndex++) {
+                Neuron[] neurons = new Neuron[layers.get(layerIndex).size()];
+                var value = new Future[layers.get(layerIndex).size()];
+                for (var neuronIndex = 0; neuronIndex < layers.get(layerIndex).size(); neuronIndex++) {
+                    value[neuronIndex] = executor.submit(new CalcNeuronValue(new NeuronIndexPair(layerIndex, neuronIndex)));
                 }
+                for (var neuronIndex = 0; neuronIndex < layers.get(layerIndex).size(); neuronIndex++) {
+                    try {
+                        neurons[neuronIndex] = new NeuronImpl((double) value[neuronIndex].get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        LOGGER.error(e);
+                    }
+                }
+                layers.set(layerIndex, new NeuralLayerImpl(neurons));
             }
-            layers.set(layerIndex, new NeuralLayerImpl(neurons));
+            return executor.awaitTermination(1, TimeUnit.HOURS);
         }
-        return executor.awaitTermination(1, TimeUnit.HOURS);
     }
 
     private class CalcNeuronValue implements Callable<Double> {
@@ -141,7 +142,7 @@ public class NeuralNetworkImpl implements NeuralNetwork {
     }
 
     public NeuralLayer getOutputLayer() {
-        return layers.get(layers.size() - 1);
+        return layers.getLast();
     }
 
     public NeuralLayer getLayer(int index) {
